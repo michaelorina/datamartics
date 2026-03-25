@@ -154,3 +154,7 @@ func (d *DB) SaveReport(r *models.Report) error {
 	)
 	return err
 }
+
+func (d *DB) Close() error {
+    return d.conn.Close()
+}
