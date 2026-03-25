@@ -57,7 +57,7 @@ The JSON must follow this exact schema:
   "quantity": <number — how many units, default 1 if not stated>,
   "amount":   <number — total amount in KES, required>,
   "type":     "<string — must be exactly 'sale' or 'expense'>",
-  "note":     "<string — any extra context, empty string if none>"
+  "currency": "<string — currency code, almost always KES>"
 }
 
 Rules:
@@ -66,6 +66,7 @@ Rules:
 - If the message describes receiving money or selling something, type is "sale".
 - If the message describes spending money or buying something, type is "expense".
 - If quantity is not mentioned, set it to 1.
+- currency is almost always "KES" unless the message explicitly states otherwise.
 - If you cannot parse a valid transaction from the message, return:
   {"error": "could not parse transaction"}
 
@@ -198,7 +199,7 @@ func unmarshalTransaction(jsonStr, originalMessage string) (models.ParsedTransac
 		log.Println(err)
 		return models.ParsedTransaction{}, err
 	}
-	if tx.Type != models.TransactionTypeSale && tx.Type != models.TransactionTypeExpense {
+	if tx.Type != models.TypeSale && tx.Type != models.TypeExpense {
 		err := fmt.Errorf("parser: invalid transaction type %q for message %q", tx.Type, originalMessage)
 		log.Println(err)
 		return models.ParsedTransaction{}, err
